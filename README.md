@@ -12,13 +12,12 @@ Dependencies:</br>
 requests</br>
 json</br>
 
-</br></br>
-A canvas extension that can pull a student users class info to make it more accessible.</b></b>
+</br>
+A canvas extension that can pull a student users class info to make it more accessible.</br>
 
-The extension only requires the student user to get a token from their institution, which can be obtained in the users account.</b></b>
+The extension only requires the student user to get a token from their institution, which can be obtained in the users account.</br>
 
-After the user puts in their token, information such as announcements and assignments can be pulled from the desktop without having to log into canvas.</b></b>
-
+After the user puts in their token, information such as announcements and assignments can be pulled from the desktop without having to log into canvas.</br></br>
 
 
 Getting token:

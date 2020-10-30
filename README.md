@@ -8,11 +8,11 @@ Giuseppe Jeanty </br>
 Nick Everette   </br>
 </br></br>
 
-Dependencies:</b></b>
-requests
-json
+Dependencies:</b>
+requests</b>
+json</b>
 
-</br></br></b>
+</br></br>
 A canvas extension that can pull a student users class info to make it more accessible.</b></b>
 
 The extension only requires the student user to get a token from their institution, which can be obtained in the users account.</b></b>

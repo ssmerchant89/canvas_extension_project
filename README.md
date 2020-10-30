@@ -13,7 +13,7 @@ requests</br>
 json</br>
 
 </br>
-A canvas extension that can pull a student users class info to make it more accessible.</br>
+A canvas extension that can pull a student users class info to make it more accessible.</br></br>
 
 The extension only requires the student user to get a token from their institution, which can be obtained in the users account.</br>
 

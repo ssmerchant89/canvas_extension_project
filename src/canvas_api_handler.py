@@ -1,20 +1,120 @@
 import requests
+import json
 
-url = "https://canvas.instructure.com:443/api/v1/courses?enrollment_state=active"
+user_token1 = "access_token=" + # "enter access token string here"
 
-payload = {}
-headers = {
-  'Authorization': 'Bearer 13605~09L4zAm6VDfDts6IuWtNmrpfrFZDbq4OJhGRN6zlMH9qHI1bboDue3NEeIOBcBV9',
-  'Cookie': '_csrf_token=uf6B5cBINHGax3rj2IeCMs%2BUJbw88Q9nrBjhVYG06TD8rdakoQ9wOKqhUaKwsOBGqfNx5kuJOArhdbAx%2BIWgew%3D%3D; log_session_id=d6904a33a415691644320e0d9cfa4388; _legacy_normandy_session=vBLrgRZmuED54AaC5MiMhQ.nC0QgMfRNT13HkfiCVV_Nsox5ZjGea340nfyFynKwZAbL8-I8pLqk5FhCFtfqNzRMustu8XlKVN0C1oKK0BfrMzylqHp3dV56mCZWqyZv4DmV2Tvcfk_fluCuOJISiV-.jbCruUFKRhicDMEoz8s9LY5QXOc.X5oXEQ; canvas_session=vBLrgRZmuED54AaC5MiMhQ.nC0QgMfRNT13HkfiCVV_Nsox5ZjGea340nfyFynKwZAbL8-I8pLqk5FhCFtfqNzRMustu8XlKVN0C1oKK0BfrMzylqHp3dV56mCZWqyZv4DmV2Tvcfk_fluCuOJISiV-.jbCruUFKRhicDMEoz8s9LY5QXOc.X5oXEQ'
-}
-
-response = requests.request("GET", url, headers=headers, data = payload)
-
-jsonResponse = response.json()
-print(type(jsonResponse))
-for item in jsonResponse:
-  if item["name"] != "Student Affairs Resources":
-    print(item["name"])
+institution_url = "https://ecu.instructure.com"
 
 
-# print(response.text.encode('utf8'))
+#returns a dictionary, with a list of courses, and a list of course ids. 
+#Parameters are the unique url for users institution, and unique user access token.
+def return_course_info(institution_url, user_token):
+	info_dict = {}
+	url = institution_url + "/api/v1/courses?enrollment_type=student&enrollment_state=active&" + user_token 
+	requestPackage = requests.get(url)
+	info_json = json.loads(requestPackage.text)
+
+	info_dict['course_names'] = []
+	info_dict['course_ids'] = []
+
+	for item in json_list:
+		for key,value in item.items():
+			if key == "name" and item["name"] != "Student Affairs Resources":
+				info_dict['course_names'].append(value)
+			elif item["name"] == "Student Affairs Resources":
+				break
+			elif key == "id":
+				info_dict['course_ids'].append(value)
+
+	return info_dict
+
+
+#Returns a dictionary, with a list of a single course's information.
+#Information is the description, due date, submission status, type, and point value.
+#Parameters are the unique url for users institution, and unique user access token, and the course id.
+def return_assignment_info(institution_url, user_token, course_id):
+	info_dict = {}
+	url = institution_url + "/api/v1/courses/" + course_id + "/assignments?" + user_token 
+	requestPackage = requests.get(url)
+	info_json = json.loads(requestPackage.text)
+
+	info_dict['descriptions'] = []
+	info_dict['due_dates'] = []
+	info_dict['sub_status'] = []
+	info_dict['types'] = []
+	info_dict['points'] = []
+	info_dict['link'] = []
+
+	for item in json_list:
+		for key,value in item.items():
+			if key == "description":
+				info_dict['descriptions'].append(value)
+			elif key == "due_at":
+				info_dict['due_dates'].append(value)
+			elif key == "has_submitted_submissions":
+				info_dict['sub_status'].append(value)
+			elif key == "submission_types":
+				info_dict['types'].append(value)
+			elif key == "points_possible":
+				info_dict['points'].append(value)
+			elif key == "html_url":
+				info_dict['link'].append(value)
+
+	return info_dict
+
+#Returns a dictionary, with a list of a single course's announcement information.
+#Announcement information is the title, date posted, and the message.
+#Parameters are the unique url for users institution, and unique user access token, and the course id.
+def return_announcement_info(institution_url, user_token, course_id):
+	info_dict = {}
+	url = institution_url + "/api/v1/announcements?context_codes[]=course_" + course_id + "&" + user_token 
+	requestPackage = requests.get(url)
+	info_json = json.loads(requestPackage.text)
+
+	info_dict['title'] = []
+	info_dict['date'] = []
+	info_dict['message'] = []
+
+	for item in json_list:
+		for key,value in item.items():
+			if key == "title":
+				info_dict['title'].append(value)
+			elif key == "posted_at":
+				info_dict['date'].append(value)
+			elif key == "message":
+				info_dict['message'].append(value)
+
+	return info_dict			
+
+
+
+
+
+
+
+
+
+
+
+'''
+info_dict = {}
+url = "https://ecu.instructure.com/api/v1/announcements?context_codes[]=course_52440&access_token=TOKEN GOES HERE"
+requestPackage = requests.get(url)
+print(type(requestPackage))
+json_list = json.loads(requestPackage.text)
+print(type(json_list))
+
+info_dict['title'] = []
+info_dict['date'] = []
+info_dict['message'] = []
+
+
+for item in json_list:
+	for key,value in item.items():
+		if key == "title":
+			info_dict['title'].append(value)
+		elif key == "posted_at":
+			info_dict['date'].append(value)
+		elif key == "message":
+			info_dict['message'].append(value)
+'''

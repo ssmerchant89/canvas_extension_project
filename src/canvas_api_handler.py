@@ -1,7 +1,7 @@
 import requests
 import json
 
-user_token1 = "access_token=" + # "enter access token string here"
+#user_token1 = "enter access token string here"
 
 institution_url = "https://ecu.instructure.com"
 
@@ -10,9 +10,9 @@ institution_url = "https://ecu.instructure.com"
 #Parameters are the unique url for users institution, and unique user access token.
 def return_course_info(institution_url, user_token):
 	info_dict = {}
-	url = institution_url + "/api/v1/courses?enrollment_type=student&enrollment_state=active&" + user_token 
+	url = institution_url + "/api/v1/courses?enrollment_type=student&enrollment_state=active&" + "access_token=" +  user_token 
 	requestPackage = requests.get(url)
-	info_json = json.loads(requestPackage.text)
+	json_list = json.loads(requestPackage.text)
 
 	info_dict['course_names'] = []
 	info_dict['course_ids'] = []
@@ -34,9 +34,9 @@ def return_course_info(institution_url, user_token):
 #Parameters are the unique url for users institution, and unique user access token, and the course id.
 def return_assignment_info(institution_url, user_token, course_id):
 	info_dict = {}
-	url = institution_url + "/api/v1/courses/" + course_id + "/assignments?" + user_token 
+	url = institution_url + "/api/v1/courses/" + course_id + "/assignments?" + "access_token=" +  user_token 
 	requestPackage = requests.get(url)
-	info_json = json.loads(requestPackage.text)
+	json_list = json.loads(requestPackage.text)
 
 	info_dict['descriptions'] = []
 	info_dict['due_dates'] = []
@@ -67,9 +67,9 @@ def return_assignment_info(institution_url, user_token, course_id):
 #Parameters are the unique url for users institution, and unique user access token, and the course id.
 def return_announcement_info(institution_url, user_token, course_id):
 	info_dict = {}
-	url = institution_url + "/api/v1/announcements?context_codes[]=course_" + course_id + "&" + user_token 
+	url = institution_url + "/api/v1/announcements?context_codes[]=course_" + course_id + "&" + "access_token=" + user_token 
 	requestPackage = requests.get(url)
-	info_json = json.loads(requestPackage.text)
+	json_list = json.loads(requestPackage.text)
 
 	info_dict['title'] = []
 	info_dict['date'] = []
@@ -90,31 +90,3 @@ def return_announcement_info(institution_url, user_token, course_id):
 
 
 
-
-
-
-
-
-
-'''
-info_dict = {}
-url = "https://ecu.instructure.com/api/v1/announcements?context_codes[]=course_52440&access_token=TOKEN GOES HERE"
-requestPackage = requests.get(url)
-print(type(requestPackage))
-json_list = json.loads(requestPackage.text)
-print(type(json_list))
-
-info_dict['title'] = []
-info_dict['date'] = []
-info_dict['message'] = []
-
-
-for item in json_list:
-	for key,value in item.items():
-		if key == "title":
-			info_dict['title'].append(value)
-		elif key == "posted_at":
-			info_dict['date'].append(value)
-		elif key == "message":
-			info_dict['message'].append(value)
-'''

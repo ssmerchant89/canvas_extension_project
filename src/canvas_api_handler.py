@@ -1,6 +1,7 @@
 import requests
 import json
-
+import webbrowser
+import ciso8601
 #user_token1 = "enter access token string here"
 
 institution_url = "https://ecu.instructure.com"
@@ -74,6 +75,7 @@ def return_announcement_info(institution_url, user_token, course_id):
 	info_dict['title'] = []
 	info_dict['date'] = []
 	info_dict['message'] = []
+	info_dict['link'] = []
 
 	for item in json_list:
 		for key,value in item.items():
@@ -83,6 +85,8 @@ def return_announcement_info(institution_url, user_token, course_id):
 				info_dict['date'].append(value)
 			elif key == "message":
 				info_dict['message'].append(value)
+			elif key == "html_url":
+				info_dict['link'].append(value)
 
 	return info_dict			
 

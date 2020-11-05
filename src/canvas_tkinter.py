@@ -1,6 +1,13 @@
 import tkinter as tk
 import canvas_api_handler
-from PIL import Image, ImageTk
+from functools import partial
+import webbrowser
+import ciso8601
+import time
+import datetime
+from PIL import ImageTk, Image
+
+
 
 class access_window():
 
@@ -17,11 +24,17 @@ class access_window():
 		return self.token
 
 	#Creates the start window with widgets
-	def draw_window(self):	
+	def draw_window(self):
 		self.root = tk.Tk()
 		self.root.title("Canvas Student Companion")
 		self.root.geometry("400x400")
+
 		self.root.configure(bg='#262626')
+
+		path = "canvas_pic.png"
+		img = ImageTk.PhotoImage(Image.open("canvas_pic.png"))
+		panel = tk.Label(self.root,background="#262626", image = img)
+		panel.place(x=100 ,y=280)
 
 		#sets access token, if access token is valid, window is destroyed and class window displayed
 		def set_access_token():
@@ -92,6 +105,8 @@ class courses_window():
 		self.course_dictionary = course_dictionary
 		self.window_choice = -1
 		self.course_name_id = []
+		self.course_name_id.append("")
+		self.course_name_id.append("")
 
 	def get_window_choice(self):
 		return self.window_choice
@@ -102,33 +117,41 @@ class courses_window():
 
 
 	def draw_window(self):
+		self.window_choice = -1
 		self.root = tk.Tk()
 		self.root.title("Canvas Courses")
-		self.root.geometry("550x450")
+		self.root.geometry("550x400")
 		self.root.configure(bg='#262626')				
 
 		def assignment_click(self, index):
-			self.course_name_id.append(course_dictionary['course_names'][index])
-			self.course_name_id.append(course_dictionary['course_ids'][index])
+			self.course_name_id[0] = (course_dictionary['course_names'][index])
+			self.course_name_id[1] = (course_dictionary['course_ids'][index])
 			self.window_choice = 2
 			self.root.destroy() 
 
 		def announcement_click(self, index):
-			self.course_name_id.append(course_dictionary['course_names'][index])
-			self.course_name_id.append(course_dictionary['course_ids'][index])
+			self.course_name_id[0] = (course_dictionary['course_names'][index])
+			self.course_name_id[1] = (course_dictionary['course_ids'][index])
 			self.window_choice = 3
 			self.root.destroy()
+
+
+		path = "canvas_pic.png"
+		img = ImageTk.PhotoImage(Image.open("canvas_pic.png"))
+		panel = tk.Label(self.root,background="#262626", image = img)
+		panel.place(x=450 ,y=15)
 
 		course_name_pos = 80
 
 		label = tk.Label(
-    		text="CANVAS COURSES:",
+    		text="CANVAS COURSES",
     		foreground="#8c8c8c",  # Set the text color to white
     		background="#262626",  # Set the background color to black
     		font = ("Monokai 20 bold")
 		)
 		label.place(x=20, y=20)
 
+		
 
 		for index, name in enumerate(course_dictionary['course_names']):
 
@@ -146,7 +169,7 @@ class courses_window():
     			foreground="#ffa31a",  # Set the text color to white
     			background="#262626",  # Set the background color to black
     			font = ("Monokai",9),
-    			command = lambda: assignment_click(self, index)
+    			command = partial(assignment_click, self, index)
 			)
 			button.place(x=325, y=course_name_pos)
 			button1 = tk.Button(
@@ -154,17 +177,18 @@ class courses_window():
     			foreground="#ffa31a",  # Set the text color to white
     			background="#262626",  # Set the background color to black
     			font = ("Monokai",9),
-    			command = lambda: assignment_click(self, index)
+    			command = partial(announcement_click, self, index)
 			)
 
 			button1.place(x=325 + 100, y=course_name_pos)
 			course_name_pos += 60
-
+			
 
 		self.root.mainloop()
 
 
 class assignments_window():
+
 
 	def __init__(self):
 		self.course_name_id = []
@@ -181,7 +205,8 @@ class assignments_window():
 		return self.window_choice
 
 
-	def draw_window(self):				
+	def draw_window(self):
+		self.window_choice = -1				
 		self.root = tk.Tk()
 		self.root.title("Canvas assignments")
 		
@@ -193,20 +218,38 @@ class assignments_window():
     		font = ("Monokai 20 bold")
     	)
 
+		def back_button_click(self):
+			self.window_choice = 1
+			self.root.destroy()
+
+		def link_button_click(self, link):
+			webbrowser.open(link, new=2)
+
+
+
 		label = tk.Label(self.root, text = self.course_name_id[0] + " assignments", bg='#262626', fg='#ffa31a',font = ("Monokai 10 bold"))
 		label.grid(row = 0, column = 0, sticky = "w",padx = 1, pady = 1)
 		
+		button = tk.Button(
+    		text= "previous window",
+    		foreground="#bb33ff",  # Set the text color to white
+    		background="#262626",  # Set the background color to black
+    		font = ("Monokai",9),
+    		command = partial(back_button_click, self)
+		)
+
+		button.grid(row = 0, column = 2, sticky = "w",padx = 1, pady = 1)
 
 
 		self.root.configure(bg='#262626')
 
 		#for index, name in enumerate(self.assignment_dictionary['descriptions']):
-		for index, name in enumerate(self.assignment_dictionary['descriptions']):
+		for index, name in enumerate(self.assignment_dictionary['link']):
 			self.root.columnconfigure(0, weight=1)
 			self.root.rowconfigure(index + 1, weight=1)
 
-			label = tk.Label(self.root, text = "Assignment " + str(index + 1), bg='#262626', fg='#ffa31a')
-			label.grid(rowspan = 1 ,columnspan = 1, row = index + 1, column = 0, sticky = "w",padx = 1, pady = 1)
+			button = tk.Button(self.root, text = name, bg='#262626', fg='#e60073', command = partial(link_button_click, self, name))
+			button.grid(rowspan = 1 ,columnspan = 1, row = index + 1, column = 0, sticky = "w",padx = 1, pady = 1)
 
 		for index, name in enumerate(self.assignment_dictionary['types']):
 			self.root.columnconfigure(1, weight=1)
@@ -229,9 +272,87 @@ class assignments_window():
 		self.root.mainloop()
 
 
+class announcements_window():
+
+
+	def __init__(self):
+		self.course_name_id = []
+		self.window_choice = -1
+		self.announcements_dictionary = {}
+
+	def set_announcements_dictionary(self, announcements_dictionary):
+		self.announcements_dictionary = announcements_dictionary
+
+	def set_course_name_id(self, course_name_id):
+		self.course_name_id	= course_name_id
+
+	def get_window_choice(self):
+		return self.window_choice
+
+
+	def draw_window(self):
+		self.window_choice = -1				
+		self.root = tk.Tk()
+		self.root.title("Canvas announcements")
+		
+
+		label = tk.Label(
+			text="CANVAS COURSES:",
+    		foreground="#8c8c8c",  # Set the text color to white
+    		background="#262626",  # Set the background color to black
+    		font = ("Monokai 20 bold")
+    	)
+
+		def back_button_click(self):
+			self.window_choice = 1
+			self.root.destroy()
+
+		def link_button_click(self, link):
+			webbrowser.open(link, new=2)
 
 
 
+		label = tk.Label(self.root, text = self.course_name_id[0] + " announcements", bg='#262626', fg='#ffa31a',font = ("Monokai 10 bold"))
+		label.grid(row = 0, column = 0, sticky = "w",padx = 1, pady = 1)
+		
+		button = tk.Button(
+    		text= "previous window",
+    		foreground="#bb33ff",  # Set the text color to white
+    		background="#262626",  # Set the background color to black
+    		font = ("Monokai",9),
+    		command = partial(back_button_click, self)
+		)
+
+		button.grid(row = 0, column = 2, sticky = "w",padx = 1, pady = 1)
+
+		self.root.configure(bg='#262626')
+
+		if self.announcements_dictionary['link']:
+			for index, name in enumerate(self.announcements_dictionary['link']):
+				self.root.columnconfigure(0, weight=1)
+				self.root.rowconfigure(index + 1, weight=1)
+
+				button = tk.Button(self.root, text = name, bg='#262626', fg='#e60073', command = partial(link_button_click, self, name))
+				button.grid(rowspan = 1 ,columnspan = 1, row = index + 1, column = 0, sticky = "w",padx = 1, pady = 1)
+		else:
+			label = tk.Label(self.root, text = "No recent " + self.course_name_id[0] + " announcements", bg='#262626', fg= 'red',font = ("Monokai 15 bold"))
+			label.grid(row = 1, column = 0, sticky = "w",padx = 1, pady = 3)
+
+		if self.announcements_dictionary['date']:
+			for index, name in enumerate(self.announcements_dictionary['date']):
+
+				self.root.columnconfigure(1, weight=1)
+				self.root.rowconfigure(index + 1, weight=1)
+
+				label = tk.Label(self.root, text = "Date posted: " + str(ciso8601.parse_datetime(name).date().strftime('%m-%d-%y')), bg='#262626', fg='#00ccff')
+				label.grid(rowspan = 1 ,columnspan = 1, row = index + 1, column = 1, sticky = "w",padx = 1, pady = 3)
+
+				if (((ciso8601.parse_datetime(name).date().strftime('%m-%d-%y')) == ((datetime.date.today() - datetime.timedelta(days = 1)).strftime('%m-%d-%y'))) or ((ciso8601.parse_datetime(name).date().strftime('%m-%d-%y')) == (datetime.date.today().strftime('%m-%d-%y'))) or ((ciso8601.parse_datetime(name).date().strftime('%m-%d-%y')) == ((datetime.date.today() + datetime.timedelta(days = 1)).strftime('%m-%d-%y')))) :
+					label = tk.Label(self.root, text = "new!", bg='#262626', fg='green')
+					label.grid(rowspan = 1 ,columnspan = 2, row = index + 1, column = 2, sticky = "w",padx = 1, pady = 3)
+
+
+		self.root.mainloop()
 
 
 
@@ -245,7 +366,7 @@ window_num = 0
 access_win = access_window()
 courses_win = courses_window(token, course_dictionary)
 assignments_win = assignments_window()
-
+announcements_win = announcements_window()
 
 while window_num != -1:
 
@@ -264,6 +385,12 @@ while window_num != -1:
 		assignments_win.set_assignment_dictionary(canvas_api_handler.return_assignment_info(institution_url,token,str(courses_win.get_course_name_id()[1])))
 		assignments_win.draw_window()
 		window_num = assignments_win.get_window_choice()
+
+	elif window_num == 3:
+		announcements_win.set_course_name_id(courses_win.get_course_name_id())
+		announcements_win.set_announcements_dictionary(canvas_api_handler.return_announcement_info(institution_url,token,str(courses_win.get_course_name_id()[1])))
+		announcements_win.draw_window()
+		window_num = announcements_win.get_window_choice()
 
 
 

@@ -6,7 +6,7 @@ import ciso8601
 import time
 import datetime
 from PIL import ImageTk, Image
-
+import os
 
 
 class access_window():
@@ -362,8 +362,17 @@ token = ""
 course_dictionary = {}
 institution_url = "https://ecu.instructure.com"
 
-window_num = 0
-access_win = access_window()
+if os.path.exists("access_token.txt") == True:
+	window_num = 1
+	access_token_file = open("access_token.txt","r+")  
+	token = access_token_file.read()
+	course_dictionary = canvas_api_handler.return_course_info(institution_url, token)
+	print("TOKEN:" , token)
+	
+else:
+	window_num = 0
+	access_win = access_window()
+
 courses_win = courses_window(token, course_dictionary)
 assignments_win = assignments_window()
 announcements_win = announcements_window()
@@ -373,6 +382,9 @@ while window_num != -1:
 	if window_num == 0:
 		access_win.draw_window()
 		token = access_win.get_access_token()
+		access_token_file = open("access_token.txt","w+")
+		access_token_file.write(token)
+		access_token_file.close()
 		course_dictionary = canvas_api_handler.return_course_info(institution_url, token)
 		window_num = access_win.get_window_choice()
 

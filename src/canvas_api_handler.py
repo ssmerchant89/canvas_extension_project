@@ -2,7 +2,10 @@ import requests
 import json
 import webbrowser
 import ciso8601
-#user_token1 = "enter access token string here"
+
+
+#Canvas_api_handler interacts with canvas's API to pull course, assignment, and announcement information in a convienent list.
+
 
 institution_url = "https://ecu.instructure.com"
 

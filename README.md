@@ -30,7 +30,7 @@ Getting token:
 
 3.Click on settings.</b></b>
 
-![](screenshots/settings.PNG)</br>
+![](screenshots/settings_scrn.PNG)</br>
 
 4.Click on new access token.</b></b>
 

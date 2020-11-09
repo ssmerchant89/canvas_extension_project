@@ -17,7 +17,7 @@ json</br>
 functools</br>
 time</br>
 datetime</br>
-PIL</br>
+Pillow</br>
 os</br>
 pymsgbox</br>
 tkinter</br>
@@ -28,6 +28,9 @@ A canvas extension that can pull a student users class info to make it more acce
 The extension only requires the student user to get a token from their institution, which can be obtained in the users account.</br>
 
 After the user puts in their token, information such as announcements and assignments can be pulled from the desktop without having to log into canvas.</br></br>
+
+ONLY WINDOWS IS SUPPORTED!
+>
 
 
 Getting token:

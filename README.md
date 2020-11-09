@@ -8,9 +8,19 @@ Giuseppe Jeanty </br>
 Nick Everette   </br>
 </br></br>
 
-Dependencies:</br>
+DEPENDENCIES:</br>
 requests</br>
 json</br>
+ciso8601</br>
+webbrowser</br>
+json</br>
+functools</br>
+time</br>
+datetime</br>
+PIL</br>
+os</br>
+pymsgbox</br>
+tkinter</br>
 
 </br>
 A canvas extension that can pull a student users class info to make it more accessible.</br></br>

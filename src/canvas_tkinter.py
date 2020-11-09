@@ -1,4 +1,5 @@
 import tkinter as tk
+import pymsgbox
 import canvas_api_handler
 from functools import partial
 import webbrowser
@@ -36,6 +37,7 @@ class access_window():
 	#Draws the start window with widgets
 	def draw_window(self):
 		self.window_choice = -1
+		self.token = ""
 		self.save_state = 0
 		self.root = tk.Tk()
 		self.root.title("Canvas Student Companion")
@@ -444,8 +446,12 @@ while window_num != -1:
 
 		if access_win.get_access_token() != "":
 			token = access_win.get_access_token()
-			course_dictionary = canvas_api_handler.return_course_info(institution_url, token)
 
+			if canvas_api_handler.return_course_info(institution_url, token) != -1:
+				course_dictionary = canvas_api_handler.return_course_info(institution_url, token)
+			else:
+				pymsgbox.alert('Invalid token!')
+				access_win.window_choice = 0
 
 		if (access_win.get_save_state() == 1) and (access_win.get_access_token() != ""):
 			access_token_file = open("access_token.txt","w+")
@@ -453,7 +459,7 @@ while window_num != -1:
 			access_token_file.close()
 
 		window_num = access_win.get_window_choice()
-
+f
 	elif window_num == 1:
 		courses_win.draw_window()
 		window_num = courses_win.get_window_choice()

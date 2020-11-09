@@ -13,24 +13,28 @@ institution_url = "https://ecu.instructure.com"
 #returns a dictionary, with a list of courses, and a list of course ids. 
 #Parameters are the unique url for users institution, and unique user access token.
 def return_course_info(institution_url, user_token):
-	info_dict = {}
-	url = institution_url + "/api/v1/courses?enrollment_type=student&enrollment_state=active&" + "access_token=" +  user_token 
-	requestPackage = requests.get(url)
-	json_list = json.loads(requestPackage.text)
+	try:
+		info_dict = {}
+		url = institution_url + "/api/v1/courses?enrollment_type=student&enrollment_state=active&" + "access_token=" +  user_token 
+		requestPackage = requests.get(url)
+		json_list = json.loads(requestPackage.text)
 
-	info_dict['course_names'] = []
-	info_dict['course_ids'] = []
+		info_dict['course_names'] = []
+		info_dict['course_ids'] = []
 
-	for item in json_list:
-		for key,value in item.items():
-			if key == "name" and item["name"] != "Student Affairs Resources":
-				info_dict['course_names'].append(value)
-			elif item["name"] == "Student Affairs Resources":
-				break
-			elif key == "id":
-				info_dict['course_ids'].append(value)
+		for item in json_list:
+			for key,value in item.items():
+				if key == "name" and item["name"] != "Student Affairs Resources":
+					info_dict['course_names'].append(value)
+				elif item["name"] == "Student Affairs Resources":
+					break
+				elif key == "id":
+					info_dict['course_ids'].append(value)
 
-	return info_dict
+		return info_dict
+
+	except:
+		return -1
 
 
 #Returns a dictionary, with a list of a single course's information.

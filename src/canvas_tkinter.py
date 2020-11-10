@@ -459,7 +459,7 @@ while window_num != -1:
 			access_token_file.close()
 
 		window_num = access_win.get_window_choice()
-f
+
 	elif window_num == 1:
 		courses_win.draw_window()
 		window_num = courses_win.get_window_choice()
